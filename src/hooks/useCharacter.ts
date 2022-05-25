@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { CharacterSides } from "../types/CharacterSides";
+import { mapSpots } from "../data/mapSpots";
 
 export function useCharacter(){
   const [pos, setPos] = useState({ x: 3, y: 5 })
@@ -7,7 +8,7 @@ export function useCharacter(){
 
   const moveToRight = ()=>{
     setPos(pos => ({
-      x: pos.x + 1,
+      x: canMove(pos.x + 1, pos.y) ? pos.x + 1 : pos.x,
       y: pos.y
     }))
     setSide('right')
@@ -15,7 +16,7 @@ export function useCharacter(){
 
   const moveToLeft = () =>{
     setPos(pos => ({
-      x: pos.x -1,
+      x: canMove(pos.x - 1, pos.y) ? pos.x - 1 : pos.x,
       y: pos.y
     }))
     setSide('left')
@@ -24,7 +25,7 @@ export function useCharacter(){
   const moveToUp = () =>{
     setPos(pos =>({
       x: pos.x,
-      y: pos.y - 1
+      y: canMove(pos.x, pos.y - 1) ? pos.y - 1 : pos.y
     }))
     setSide('up')
   }
@@ -32,9 +33,17 @@ export function useCharacter(){
   const moveToDown = () =>{
     setPos(pos =>({
       x: pos.x,
-      y: pos.y + 1
+      y: canMove(pos.x, pos.y + 1) ? pos.y + 1 : pos.y
     }))
     setSide('down')
+  }
+
+  const canMove = (x: number, y: number) =>{
+    if(mapSpots[y] !== undefined && mapSpots[y][x] !== undefined){
+      return (mapSpots[y][x] === 1)
+    }
+
+    return false;
   }
 
   return {
